@@ -4,6 +4,7 @@ import com.zenith.livinghistory.api.zenithlivinghistoryapi.data.repository.Annot
 import com.zenith.livinghistory.api.zenithlivinghistoryapi.data.repository.ContentRepository;
 import com.zenith.livinghistory.api.zenithlivinghistoryapi.dto.Annotation;
 import com.zenith.livinghistory.api.zenithlivinghistoryapi.dto.Content;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +46,7 @@ public class AnnotationController {
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
 	public List<Annotation> GetAnnotationsByContentId(@PathVariable("id") String id) {
 		Content content = this.contentRepository.findOne(id);
-		List<Annotation> annotations = content.annotations;
+		List<Annotation> annotations = content.getAnnotations();
 		return annotations;
 	}
 }
