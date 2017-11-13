@@ -36,7 +36,7 @@ public class LocationBody implements Serializable {
 
 	public double getLatitude () { return latitude; }
 
-	public void setLatitude (double latitude) { this.longitude = latitude; }
+	public void setLatitude (double latitude) { this.latitude = latitude; }
 
 
 
