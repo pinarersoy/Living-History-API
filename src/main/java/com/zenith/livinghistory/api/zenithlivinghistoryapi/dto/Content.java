@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.joda.time.DateTime;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
@@ -35,7 +34,6 @@ public class Content implements Serializable {
     }
 
     public Content(String contentType, String title, String description, String[] tags, DateTime date, LocationBody location, String creator) {
-
 		this.contentType = contentType;
 		this.title = title;
 		this.description = description;
@@ -43,6 +41,7 @@ public class Content implements Serializable {
 		this.date = date;
 		this.location = location;
 		this.creator = creator;
+//		this.annotations = new ArrayList<>();
 	}
 
     @JsonProperty("@contentType")
@@ -64,6 +63,11 @@ public class Content implements Serializable {
 
     private String creator;
 
+//    @DBRef
+//    @CascadeSave
+//    @Field("annotations")
+    private List<Annotation> annotations;
+
     public List<Annotation> getAnnotations() {
         return annotations;
     }
@@ -71,9 +75,6 @@ public class Content implements Serializable {
     public void setAnnotations(List<Annotation> annotations) {
         this.annotations = annotations;
     }
-
-    @DBRef
-	private List<Annotation> annotations;
 
 	public String getTitle() {
 		return title;
