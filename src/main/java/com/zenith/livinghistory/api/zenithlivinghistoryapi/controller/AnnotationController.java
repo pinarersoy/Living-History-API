@@ -26,13 +26,9 @@ public class AnnotationController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Annotation> create(@RequestBody @Valid Annotation annotation) {
-        Annotation savedAnnotation = annotationRepository.save(annotation);
         Content content = contentRepository.findOne(annotation.getTarget().getId());
         List<Annotation> annotations = content.getAnnotations();
-        if (annotations == null) {
-            annotations = new ArrayList<>();
-        }
-        annotations.add(savedAnnotation);
+        annotations.add(annotation);
         content.setAnnotations(annotations);
         contentRepository.save(content);
         return new ResponseEntity<>(annotation, HttpStatus.CREATED);
