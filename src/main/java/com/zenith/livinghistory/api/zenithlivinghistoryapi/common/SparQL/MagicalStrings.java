@@ -4,6 +4,8 @@ public final class MagicalStrings {
 
 
     // SparQL strings.
-    public static String curryPrefix = "PREFIX";
+    public static String DbpediaURL = "http://dbpedia.org/sparql";
+    public static String QueryTimeout = "10000";
+    public static String CurryPrefix = "PREFIX";
 
 }
