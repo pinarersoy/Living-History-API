@@ -64,6 +64,22 @@ public class Content implements Serializable {
     @Field("annotations")
     private List<Annotation> annotations = new ArrayList<>();
 
+    public String getCoverImage() {
+        return this.storyItems
+                .stream()
+                .filter(item -> item.getType().equals("image"))
+                .findFirst()
+                .map(StoryItem::getContent)
+                .orElse("");
+    }
+
+    public void setCoverImage(String coverImage) {
+        this.coverImage = coverImage;
+    }
+
+    @JsonProperty("cover_image")
+    private String coverImage;
+
     public List<Annotation> getAnnotations() {
         return annotations;
     }
