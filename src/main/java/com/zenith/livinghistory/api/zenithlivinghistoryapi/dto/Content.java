@@ -1,12 +1,16 @@
 package com.zenith.livinghistory.api.zenithlivinghistoryapi.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.zenith.livinghistory.api.zenithlivinghistoryapi.utils.CascadeSave;
 import org.joda.time.DateTime;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Document(collection = "Contents")
@@ -41,7 +45,6 @@ public class Content implements Serializable {
 		this.date = date;
 		this.location = location;
 		this.creator = creator;
-//		this.annotations = new ArrayList<>();
 	}
 
     @JsonProperty("@contentType")
@@ -63,10 +66,10 @@ public class Content implements Serializable {
 
     private String creator;
 
-//    @DBRef
-//    @CascadeSave
-//    @Field("annotations")
-    private List<Annotation> annotations;
+    @DBRef
+    @CascadeSave
+    @Field("annotations")
+    private List<Annotation> annotations = new ArrayList<>();
 
     public List<Annotation> getAnnotations() {
         return annotations;
