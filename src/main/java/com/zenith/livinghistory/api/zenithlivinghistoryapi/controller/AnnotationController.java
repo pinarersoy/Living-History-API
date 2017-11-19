@@ -27,7 +27,11 @@ public class AnnotationController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Annotation> create(@RequestBody @Valid Annotation annotation) {
-        Content content = contentRepository.findOne(annotation.getTarget().getId());
+
+        String[] parts = annotation.getTarget().getId().split("/");
+        String targetId = parts[parts.length-1].split("#")[0];
+
+        Content content = contentRepository.findContentByStoryItemId(targetId);
         List<Annotation> annotations = content.getAnnotations();
         annotations.add(annotation);
         content.setAnnotations(annotations);
