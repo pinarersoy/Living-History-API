@@ -1,6 +1,7 @@
 package com.zenith.livinghistory.api.zenithlivinghistoryapi.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.joda.time.DateTime;
 
 import java.io.Serializable;
@@ -11,6 +12,7 @@ public class AnnotationBody implements Serializable {
     * Example:
     *
     * "body": {
+    *  "id" : "id prop is used in semantic annotations",
     *   "type" : "TextualBody",
     *   "value" : "<p>Paragraf!</p>",
     *   "format" : "text/html",
@@ -21,17 +23,11 @@ public class AnnotationBody implements Serializable {
     *
     * */
 
-    public AnnotationBody() {
-    }
 
-    public AnnotationBody(String type, String value, String format, String language, String creator, DateTime created) {
-        this.type = type;
-        this.value = value;
-        this.format = format;
-        this.language = language;
-        this.creator = creator;
-        this.created = created;
-    }
+    //region Private Members
+
+    @JsonProperty("@id")
+    private String id;
 
     private String type;
 
@@ -45,6 +41,34 @@ public class AnnotationBody implements Serializable {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private DateTime created;
+
+    //endregion
+
+    //region Constructor
+
+    public AnnotationBody() {
+    }
+
+    public AnnotationBody(String id, String type, String value, String format, String language, String creator, DateTime created) {
+        this.id = id;
+        this.type = type;
+        this.value = value;
+        this.format = format;
+        this.language = language;
+        this.creator = creator;
+        this.created = created;
+    }
+    //endregion
+
+    //region Getter and Setters
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getCreator() {
         return creator;
@@ -93,5 +117,6 @@ public class AnnotationBody implements Serializable {
     public void setLanguage(String language) {
         this.language = language;
     }
+    //endregion
 }
 
