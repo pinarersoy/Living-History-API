@@ -4,16 +4,18 @@ import com.github.jsonldjava.utils.Obj;
 import com.zenith.livinghistory.api.zenithlivinghistoryapi.common.SparQL.Queries;
 import com.zenith.livinghistory.api.zenithlivinghistoryapi.common.SparQL.SparQLExecutor;
 import com.zenith.livinghistory.api.zenithlivinghistoryapi.data.repository.AnnotationRepository;
+import com.zenith.livinghistory.api.zenithlivinghistoryapi.data.repository.ContentRepository;
+import com.zenith.livinghistory.api.zenithlivinghistoryapi.dto.Annotation;
+import com.zenith.livinghistory.api.zenithlivinghistoryapi.dto.Content;
 import org.apache.jena.query.*;
 import org.apache.jena.sparql.resultset.ResultsFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/semantic/")
@@ -23,6 +25,8 @@ public class SemanticAnnotationController {
 
     private AnnotationRepository annotationRepository;
 
+    private ContentRepository contentRepository;
+
     //endregion
 
     //region Constructors
@@ -31,8 +35,9 @@ public class SemanticAnnotationController {
      * Ctor.
      * @param annotationRepository - Annotation Repository.
      */
-    public SemanticAnnotationController(AnnotationRepository annotationRepository) {
+    public SemanticAnnotationController(AnnotationRepository annotationRepository, ContentRepository contentRepository) {
         this.annotationRepository = annotationRepository;
+        this.contentRepository = contentRepository;
     }
 
     //endregion
@@ -53,6 +58,23 @@ public class SemanticAnnotationController {
         }
 
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    public ResponseEntity<Object> post(@RequestBody @Valid Annotation annotation) {
+
+        String[] parts = annotation.getTarget().getId().split("/");
+        String targetId = parts[parts.length - 1].split("#")[0];
+
+        Content content = contentRepository.findContentByStoryItemId(targetId);
+        List<Annotation> annotations = content.getAnnotations();
+        annotations.add(annotation);
+        content.setAnnotations(annotations);
+        contentRepository.save(content);
+
+
+        return new ResponseEntity<>(annotation, HttpStatus.OK);
+
     }
 
     //endregion
