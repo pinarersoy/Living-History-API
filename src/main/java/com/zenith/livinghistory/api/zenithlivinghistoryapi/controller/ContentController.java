@@ -5,7 +5,6 @@ import com.zenith.livinghistory.api.zenithlivinghistoryapi.dto.Content;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -31,5 +30,11 @@ public class ContentController {
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
     public ResponseEntity<Content> get(@PathVariable("id") String id) {
         return new ResponseEntity<>(contentRepository.findOne(id), HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/search/{keyword}")
+    public ResponseEntity<List<Content>> searchContent(@PathVariable("keyword") String keyword) {
+
+        return new ResponseEntity<>(contentRepository.findContentByKeyword(keyword), HttpStatus.OK);
     }
 }
