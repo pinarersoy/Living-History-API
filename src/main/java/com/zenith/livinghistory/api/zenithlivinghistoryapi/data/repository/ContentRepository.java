@@ -17,4 +17,7 @@ public interface ContentRepository extends MongoRepository<Content, String> {
     List<Content> findContentsByUsername(String username);
 
     List<Content> findContentsByCreator(String creator);
+
+    @Query("{$text: { $search: ?0 }}")
+    List<Content> findContentByKeyword(String keyword);
 }
