@@ -1,6 +1,10 @@
 package com.zenith.livinghistory.api.zenithlivinghistoryapi.controller;
 
 import com.github.jsonldjava.utils.Obj;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.mongodb.util.JSON;
 import com.zenith.livinghistory.api.zenithlivinghistoryapi.common.SparQL.Queries;
 import com.zenith.livinghistory.api.zenithlivinghistoryapi.common.SparQL.SparQLExecutor;
 import com.zenith.livinghistory.api.zenithlivinghistoryapi.data.repository.AnnotationRepository;
@@ -9,6 +13,7 @@ import com.zenith.livinghistory.api.zenithlivinghistoryapi.dto.Annotation;
 import com.zenith.livinghistory.api.zenithlivinghistoryapi.dto.Content;
 import org.apache.jena.query.*;
 import org.apache.jena.sparql.resultset.ResultsFormat;
+import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,14 +47,76 @@ public class SemanticAnnotationController {
 
     //endregion
 
+    //region Private Methods
+
+    private boolean isCity(String iri) {
+
+        String queryString = String.format(Queries.isCity, iri);
+        SparQLExecutor executor = new SparQLExecutor();
+        JsonArray response = new JsonArray();
+
+        boolean isCity = false;
+
+        try {
+            response = executor.execute(queryString);
+
+            if (response.size() > 0)
+                isCity = true;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        return isCity;
+    }
+
+    private JsonObject getCityProperties(String iri) {
+
+        String queryString = String.format(Queries.getCityProperties, iri);
+        SparQLExecutor executor = new SparQLExecutor();
+        JsonObject city = new JsonObject();
+
+        try {
+            JsonArray response = executor.execute(queryString);
+            if (response.size() > 0)
+                city = response.get(0).getAsJsonObject();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return city;
+    }
+
+    private JsonObject getIndividualProperties(String iri) {
+
+        String queryString = String.format(Queries.getIndividualProperties, iri);
+        SparQLExecutor executor = new SparQLExecutor();
+        JsonObject individual = new JsonObject();
+
+        try {
+            JsonArray results = executor.execute(queryString);
+            if (results.size() > 0)
+                individual = results.get(0).getAsJsonObject();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return individual;
+    }
+
+    //endregion
+
     //region Public Methods
 
     @RequestMapping(method = RequestMethod.GET, value = "/entities/{keyword}")
-    public ResponseEntity<Object> get(@PathVariable("keyword") String keyword){
+    public ResponseEntity<Object> getSemanticBodies(@PathVariable("keyword") String keyword){
 
         String queryString = String.format(Queries.semanticBody, keyword);
         SparQLExecutor executor = new SparQLExecutor();
-        String response = "";
+        JsonArray response = new JsonArray();
 
         try {
             response = executor.execute(queryString);
@@ -57,7 +124,7 @@ public class SemanticAnnotationController {
             e.printStackTrace();
         }
 
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response.toString(), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST)
@@ -74,9 +141,24 @@ public class SemanticAnnotationController {
 
 
         return new ResponseEntity<>(annotation, HttpStatus.OK);
+    }
 
+    @RequestMapping(method = RequestMethod.POST, value = "/properties")
+    public ResponseEntity<Object> getBodyProperties(@RequestBody  String body) {
+
+        String iri = new JsonParser().parse(body).getAsJsonObject().get("iri").getAsString();
+        JsonObject response;
+        boolean isCity = this.isCity(iri);
+
+        if (isCity)
+            response = getCityProperties(iri);
+        else
+            response = getIndividualProperties(iri);
+
+        response.addProperty("type", (isCity ? "City" : "Person"));
+
+        return new ResponseEntity<>(response.toString(), HttpStatus.OK);
     }
 
     //endregion
-
 }

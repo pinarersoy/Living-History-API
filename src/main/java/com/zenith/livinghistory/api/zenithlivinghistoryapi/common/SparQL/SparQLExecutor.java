@@ -1,5 +1,8 @@
 package com.zenith.livinghistory.api.zenithlivinghistoryapi.common.SparQL;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.ResultSet;
@@ -12,7 +15,7 @@ import java.io.IOException;
 public class SparQLExecutor {
 
 
-    public String execute(String query) throws IOException {
+    public JsonArray execute(String query) throws IOException {
 
         try (
             QueryExecution queryExecutor = QueryExecutionFactory.sparqlService(MagicalStrings.DbpediaURL, query);
@@ -23,9 +26,11 @@ public class SparQLExecutor {
             ResultSet results = queryExecutor.execSelect();
 
             ResultSetFormatter.outputAsJSON(outputStream, results);
-            String json = new String(outputStream.toByteArray());
+            String jsonString = new String(outputStream.toByteArray());
+            JsonObject jsonObject = new JsonParser().parse(jsonString).getAsJsonObject();
+            JsonArray payload = jsonObject.getAsJsonObject("results").getAsJsonArray("bindings");
 
-            return json;
+            return payload;
 
         } catch (Exception ex) {
 
