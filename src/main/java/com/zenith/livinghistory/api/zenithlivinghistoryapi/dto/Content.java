@@ -49,11 +49,35 @@ public class Content implements Serializable {
 	@Field ("story_items")
 	private List<StoryItem> storyItems = new ArrayList<>();
 
-	private int day;
+	private String day;
 
-	private int month;
+	private String month;
 
-	private int year;
+    public String getDay() {
+        return day;
+    }
+
+    public void setDay(String day) {
+        this.day = day;
+    }
+
+    public String getMonth() {
+        return month;
+    }
+
+    public void setMonth(String month) {
+        this.month = month;
+    }
+
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
+
+    private String year;
 
     private LocationBody location;
 
@@ -124,21 +148,10 @@ public class Content implements Serializable {
 	public List<StoryItem> getStoryItems() { return storyItems; }
 
 	public void setStoryItems(List<StoryItem> storyItems) { this.storyItems = storyItems; }
+
 	public String[] getTags() { return tags; }
 
 	public void setTags(String[] tags) { this.tags = tags; }
-
-	public int getDay() { return day; }
-
-	public void setDay(int day) { this.day = day; }
-
-	public int getMonth() { return month; }
-
-	public void setMonth(int month) { this.month = month; }
-
-	public int getYear() { return year; }
-
-	public void setYear(int year) { this.year = year; }
 
     public String getId() {
         return id;

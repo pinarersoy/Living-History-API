@@ -100,9 +100,11 @@ public class Example {
 
 		content.setTags(null);
 
-		content.setDay(5);
+		content.setDay(null);
 
-		content.setMonth(5);
+		content.setMonth(null);
+
+		content.setYear("1980");
 
 		content.setLocation(new LocationBody());
 
