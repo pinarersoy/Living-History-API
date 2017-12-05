@@ -12,8 +12,10 @@ import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
+
 @RunWith(SpringRunner.class)
-@DataMongoTest()
+@DataMongoTest
 public class AnnotationBodyTest {
     @Autowired
     private AnnotationRepository annotationRepository;
@@ -23,16 +25,17 @@ public class AnnotationBodyTest {
 
     @Test
     public void whenFindByCreator_thenReturnAnnotation() {
-        AnnotationBody annotationBody = Example.GetAnnotationInstance().getBody();
+        Annotation annotation = Example.GetAnnotationInstance();
 
-        mongoTemplate.save(annotationBody);
+        mongoTemplate.save(annotation);
 
-        AnnotationBody foundAnnotationBody = annotationRepository.findFirstByCreator(annotationBody.getCreator()).getBody();
+        Annotation foundAnnotation = annotationRepository.findFirstByCreator(annotation.getCreator());
+        AnnotationBody foundAnnotationBody = foundAnnotation.getBody();
 
         // Exclude date fields to prevent false positive assertion errors caused by timezone.
-        Assert.assertThat(annotationBody, new ReflectionEquals(foundAnnotationBody, "target", "body", "created", "modified"));
-        Assert.assertThat(annotationBody.getCreator(), new ReflectionEquals(foundAnnotationBody.getCreator(), "created"));
-		Assert.assertThat(annotationBody.getLanguage(), new ReflectionEquals(foundAnnotationBody.getLanguage(), "created"));
-		Assert.assertThat(annotationBody.getFormat(), new ReflectionEquals(foundAnnotationBody.getFormat(), "created"));
+        Assert.assertThat(annotation.getBody(), new ReflectionEquals(foundAnnotationBody, "target", "body", "created", "modified"));
+        Assert.assertThat(annotation.getBody().getCreator(), new ReflectionEquals(foundAnnotationBody.getCreator(), "created"));
+		Assert.assertThat(annotation.getBody().getLanguage(), new ReflectionEquals(foundAnnotationBody.getLanguage(), "created"));
+		Assert.assertThat(annotation.getBody().getFormat(), new ReflectionEquals(foundAnnotationBody.getFormat(), "created"));
 	}
 }

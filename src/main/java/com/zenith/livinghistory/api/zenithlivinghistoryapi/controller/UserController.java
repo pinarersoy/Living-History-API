@@ -1,12 +1,12 @@
 package com.zenith.livinghistory.api.zenithlivinghistoryapi.controller;
 
+import com.zenith.livinghistory.api.zenithlivinghistoryapi.data.repository.AnnotationRepository;
 import com.zenith.livinghistory.api.zenithlivinghistoryapi.data.repository.ContentRepository;
 import com.zenith.livinghistory.api.zenithlivinghistoryapi.data.repository.UserRepository;
+import com.zenith.livinghistory.api.zenithlivinghistoryapi.dto.Annotation;
 import com.zenith.livinghistory.api.zenithlivinghistoryapi.dto.Content;
 import com.zenith.livinghistory.api.zenithlivinghistoryapi.dto.User;
 import com.zenith.livinghistory.api.zenithlivinghistoryapi.dto.request.ContentsByCreator;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,10 +16,12 @@ import java.util.List;
 public class UserController {
     private ContentRepository contentRepository;
     private UserRepository userRepository;
+    private AnnotationRepository annotationRepository;
 
-    public UserController(ContentRepository contentRepository, UserRepository userRepository) {
+    public UserController(ContentRepository contentRepository, UserRepository userRepository, AnnotationRepository annotationRepository) {
         this.contentRepository = contentRepository;
         this.userRepository = userRepository;
+        this.annotationRepository = annotationRepository;
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/{username}")
@@ -35,5 +37,15 @@ public class UserController {
     @RequestMapping(method = RequestMethod.POST, value = "/contents")
     public List<Content> getContents(@RequestBody ContentsByCreator request) {
         return contentRepository.findContentsByCreator(request.getCreator());
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/{username}/annotations")
+    public List<Annotation> getAnnotations(@PathVariable String username) {
+        return annotationRepository.findAnnotationsByUsername(username);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/annotations")
+    public List<Annotation> getAnnotations(@RequestBody ContentsByCreator request) {
+        return annotationRepository.findByCreator(request.getCreator());
     }
 }
