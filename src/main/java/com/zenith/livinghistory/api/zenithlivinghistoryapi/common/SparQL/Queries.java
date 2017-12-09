@@ -99,4 +99,20 @@ public final class Queries {
             + "}"
             + "GROUP BY "
             + "?name ?jobTitle";
+
+    static String getTagsOfIndividual =
+            "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
+            + "PREFIX  dbo: <http://dbpedia.org/ontology/>\n"
+            + "SELECT\n"
+            + "?name\n" +
+            "MIN(?job)\n" +
+            "WHERE\n" +
+            "{\n" +
+            "    OPTIONAL { <http://dbpedia.org/resource/Donald_Trump>  foaf:name  ?name }\n" +
+            "    OPTIONAL { <http://dbpedia.org/resource/Donald_Trump>  dbo:occupation  ?occupation }\n" +
+            "    OPTIONAL { ?occupation dbo:title ?job}\n" +
+            "}\n" +
+            "GROUP BY\n" +
+            "                ?name\n" +
+            " ";
 }
