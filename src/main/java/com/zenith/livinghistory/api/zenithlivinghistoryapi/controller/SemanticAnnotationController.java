@@ -5,12 +5,14 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mongodb.util.JSON;
+import com.sun.xml.internal.ws.util.CompletedFuture;
 import com.zenith.livinghistory.api.zenithlivinghistoryapi.common.SparQL.Queries;
 import com.zenith.livinghistory.api.zenithlivinghistoryapi.common.SparQL.SparQLExecutor;
 import com.zenith.livinghistory.api.zenithlivinghistoryapi.data.repository.AnnotationRepository;
 import com.zenith.livinghistory.api.zenithlivinghistoryapi.data.repository.ContentRepository;
 import com.zenith.livinghistory.api.zenithlivinghistoryapi.dto.Annotation;
 import com.zenith.livinghistory.api.zenithlivinghistoryapi.dto.Content;
+import org.apache.jena.base.Sys;
 import org.apache.jena.query.*;
 import org.apache.jena.sparql.resultset.ResultsFormat;
 import org.json.JSONObject;
@@ -107,6 +109,20 @@ public class SemanticAnnotationController {
         return individual;
     }
 
+    private void createContentTagsImplicitly(Content content, Annotation annotation) {
+
+        boolean isCity = this.isCity(annotation.getBody().getId());
+        String[] tags = content.getTags();
+
+        if(isCity) {
+
+        } else {
+
+        }
+
+
+    }
+
     //endregion
 
     //region Public Methods
@@ -139,6 +155,7 @@ public class SemanticAnnotationController {
         content.setAnnotations(annotations);
         contentRepository.save(content);
 
+        new Thread(() -> { this.createContentTagsImplicitly(content, annotation); }).start();
 
         return new ResponseEntity<>(annotation, HttpStatus.OK);
     }

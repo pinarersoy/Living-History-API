@@ -3,3 +3,7 @@ zenith.security.jwt:
   refreshTokenExpTime: 720
   tokenIssuer: ubormetanga
   tokenSigningKey: xm8EV6Hy5RMFK4EEACIDAwQus
+
+spring.data.mongodb.host: localhost
+spring.data.mongodb.port: 27017
+spring.data.mongodb.database: LivingHistoryDb
